@@ -187,8 +187,20 @@ new Vue({
       }
    },
    computed: {
-      productsSorted() {
+      productsSorted () {
          return this.products.sort((a, b) => (a.price - b.price) * this.order.dir);
+      },
+
+      classes () {
+         return [
+            'sort-control',
+            this.order.dir === 1 ? 'ascending' : 'descending'
+         ]
       }
-   }
+   },
+   methods: {
+      sort () {
+         this.order.dir *= -1;
+      }
+   },
 })
