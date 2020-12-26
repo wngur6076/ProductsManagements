@@ -1,7 +1,8 @@
 new Vue({
    el: '#app',
    data: {
-      products: [{
+      products: [
+         {
             "id": 1,
             "name": "Intelligent Granite Table",
             "category": "Tools",
@@ -208,6 +209,17 @@ new Vue({
       }
    },
    computed: {
+      categories() {
+         let categories = this.products.map(el => el.category);
+
+         return Array.from(new Set(categories))
+         .sort((a, b) => {
+            if (a < b) return -1;
+            else if (a > b) return 1;
+            else return 0;
+         });
+      },
+
       productsPaginated() {
          let start = (this.currentPage - 1) * this.perPage
          let end = this.currentPage * this.perPage
