@@ -25,9 +25,9 @@
                         <div class="form-inline justify-content-end">
                             <div class="form-group">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <input type="text" v-model="filters.name" class="form-control" placeholder="Search...">
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button"><i
+                                        <button class="btn btn-outline-secondary" v-show="whenSearching" v-on:click="clearText" type="button"><i
                                                 class="fas fa-sync-alt"></i></button>
                                         <button class="btn btn-outline-secondary" type="button"><i
                                                 class="fas fa-search"></i></button>
@@ -40,9 +40,9 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th @click="sort('name')" :class="classes">Product Name</th>
-                            <th @click="sort('category')" :class="classes">Category</th>
-                            <th @click="sort('price')" :class="classes">Price</th>
+                            <th @click="sort('name')" :class="classes('name')">Product Name</th>
+                            <th @click="sort('category')" :class="classes('category')">Category</th>
+                            <th @click="sort('price')" :class="classes('price')">Price</th>
                         </tr>
                     </thead>
                     <tbody>
