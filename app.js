@@ -238,15 +238,35 @@ new Vue({
          }
 
          return products;
+      },
+
+      isFirstPage () {
+         return this.currentPage === 1;
+      },
+
+      isLastPage () {
+         return this.currentPage >= this.pages;
+      },
+
+      pages () {
+         return Math.ceil(this.productsfiltered.length / this.perPage)
       }
    },
    methods: {
+      switchPage (page) {
+         this.currentPage = page
+      },
+
       prev () {
-         this.currentPage--;
+         if (!this.isFirstPage) {
+            this.currentPage--;
+         }
       },
 
       next () {
-         this.currentPage++;
+         if (!this.isLastPage) {
+            this.currentPage++;
+         }
       },
 
       classes (column) {
