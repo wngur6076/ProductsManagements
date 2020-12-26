@@ -189,12 +189,26 @@ new Vue({
       },
 
       filters: {
-         name: ''
-      }
+         name: '',
+
+         keywords: ''
+      },
+
+      isSearching: false,
+
+      perPage: 10,
+
+      currentPage: 1,
    },
    computed: {
+      productsPaginated() {
+         let start = (this.currentPage - 1) * this.perPage
+         let end = this.currentPage * this.perPage
+         return this.productsSorted.slice(start, end)
+      },
+
       productsSorted () {
-         return this.products.sort((a, b) => {
+         return this.productsfiltered.sort((a, b) => {
             let left = a[this.order.column], right = b[this.order.column];
 
             if (isNaN(left) && isNaN(right)) {
@@ -211,11 +225,30 @@ new Vue({
          return this.order.dir === 1 ? 'ascending' : 'descending'
       },
 
-      whenSearching () {
-         return this.filters.name.length > 0
+      keywordsIsInvalid () {
+         return this.filters.keywords.length < 3;
+      },
+
+      productsfiltered () {
+         let products = this.products;
+
+         if (this.filters.name) {
+            let findName = new RegExp(this.filters.name, 'i');
+            products =  products.filter(el => el.name.match(findName))
+         }
+
+         return products;
       }
    },
    methods: {
+      prev () {
+         this.currentPage--;
+      },
+
+      next () {
+         this.currentPage++;
+      },
+
       classes (column) {
          return [
             'sort-control',
@@ -225,11 +258,22 @@ new Vue({
 
       sort (column) {
          this.order.column = column;
-         this.order.dir *= -1;
+         this.order.dir *= -1
       },
 
       clearText () {
-         this.filters.name = "";
+         this.filters.name = this.filters.keywords = "";
+
+         this.isSearching = false
+      },
+
+      search() {
+         if (!this.keywordsIsInvalid) {
+            this.filters.name = this.filters.keywords;
+
+            this.isSearching = true
+         }
+      
       }
    },
 })
