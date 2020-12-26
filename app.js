@@ -181,6 +181,14 @@ new Vue({
             "category": "Electronics",
             "price": "375.00"
          }
-      ]
+      ],
+      order: {
+         dir: 1
+      }
+   },
+   computed: {
+      productsSorted() {
+         return this.products.sort((a, b) => (a.price - b.price) * this.order.dir);
+      }
    }
 })
