@@ -4,6 +4,7 @@ new Vue({
    el: '#app',
    data: {
       products: [],
+      categories: [],
 
       order: {
          dir: 1,
@@ -34,20 +35,21 @@ new Vue({
    },
 
    mounted() {
-      this.fetchProducts()
+      this.fetchProducts();
+      this.fetchCategories();
    },
 
    computed: {
-      categories() {
-         let categories = this.products.map(el => el.category);
+      // categories() {
+      //    let categories = this.products.map(el => el.category);
 
-         return Array.from(new Set(categories))
-         .sort((a, b) => {
-            if (a < b) return -1;
-            else if (a > b) return 1;
-            else return 0;
-         });
-      },
+      //    return Array.from(new Set(categories))
+      //    .sort((a, b) => {
+      //       if (a < b) return -1;
+      //       else if (a > b) return 1;
+      //       else return 0;
+      //    });
+      // },
 
       productsPaginated() {
          let start = (this.currentPage - 1) * this.perPage
@@ -113,6 +115,13 @@ new Vue({
          axios.get('/products')
             .then(({ data }) => {
                this.products = data.data
+            })
+      },
+
+      fetchCategories () {
+         axios.get('/categories')
+            .then(({ data }) => {
+               this.categories = data.data
             })
       },
 
