@@ -31,7 +31,11 @@ new Vue({
          price: ''
       },
 
-      isEdit: false
+      isEdit: false,
+
+      errors: {},
+
+      removedProductId: null,
    },
 
    mounted() {
@@ -154,39 +158,58 @@ new Vue({
       },
 
       update () {
-         let index = this.products.findIndex(item => item.id === this.product.id);
+         axios.put('/products/' + this.product.id, this.product)
+            .then(({ data }) => {
+               let index = this.products.findIndex(item => item.id === this.product.id);
 
-         this.products.splice(index, 1, this.product);
+               this.products.splice(index, 1, data.data);
+               
+               this.isEdit = false;
 
-         this.isEdit = false;
+               this.errors = {}
 
-         $(this.$refs.vuemodal).modal('hide');
+               $(this.$refs.vuemodal).modal('hide');
+            })
+            .catch(( { response }) => {
+               this.errors = response.data.errors
+            })
       },
 
       save () {
-         if (this.product.name && this.product.category && this.product.price) {
-            this.product.id = this.products.length + 1
+         this.product.price = this.product.price * 100
+         axios.post('/products', this.product)
+            .then(({ data }) => {
+               this.productsPaginated.unshift(data.data)
 
-            this.products.unshift(this.product)
+               this.product = {
+                  id: null,
+                  name: '',
+                  category: '',
+                  price: ''
+               }
 
-            this.product = {
-               id: null,
-               name: '',
-               category: '',
-               price: '' 
-            }
+               this.errors = {}
 
-            $(this.$refs.vuemodal).modal('hide');
-         } else {
-            alert("Please fill in the form properly")
-         }
+               $(this.$refs.vuemodal).modal('hide');
+            })
+            .catch(( { response }) => {
+               this.errors = response.data.errors
+            })
       },
 
       remove (product) {
          if (confirm("Are you sure?")) {
-            let index = this.products.findIndex(item => item.id === product.id);
-
-            this.products.splice(index, 1);
+            axios.delete('/products/' + product.id)
+               .then(res => {
+                  this.removedProductId = product.id
+                  
+                  new Promise(resolve => setTimeout(resolve, 1000))
+                     .then(() => {
+                        this.removedProductId = null
+                        let index = this.products.findIndex(item => item.id === product.id);
+                        this.products.splice(index, 1)
+                     })
+            })
          }
       },
 

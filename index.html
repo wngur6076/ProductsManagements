@@ -55,7 +55,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="product of productsPaginated">
+                        <tr v-for="product of productsPaginated" :class="{ 'table-danger': removedProductId == product.id}">
                             <td>{{ product.name }}</td>
                             <td>{{ product.category }}</td>
                             <td>{{ product.price }}</td>
@@ -99,17 +99,20 @@
                         <form>
                             <div class="form-group">
                                 <label>Product Name</label>
-                                <input type="text" v-model="product.name" class="form-control">
+                                <input type="text" v-model="product.name" class="form-control" :class="{ 'is-invalid': errors.name }">
+                                <span class="invalid-feedback" v-if="errors.name">{{ errors.name[0] }}</span>
                             </div>
                             <div class="form-group">
                                 <label>Category</label>
-                                <select class="form-control" v-model="product.category">
+                                <select class="form-control" :class="{ 'is-invalid': errors.category_id }" v-model="product.category_id">
                                     <option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.name }}</option>
                                 </select>
+                                <span class="invalid-feedback" v-if="errors.category_id">{{ errors.category_id[0] }}</span>
                             </div>
                             <div class="form-group">
                                 <label>Price ($)</label>
-                                <input type="number" v-model="product.price"  class="form-control">
+                                <input type="number" v-model="product.price" :class="{ 'is-invalid': errors.price }" class="form-control">
+                                <span class="invalid-feedback" v-if="errors.price">{{ errors.price[0] }}</span>
                             </div>
                         </form>
                     </div>
